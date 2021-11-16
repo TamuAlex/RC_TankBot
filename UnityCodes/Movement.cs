@@ -4,6 +4,9 @@ using UnityEngine;
 using RabbitMQ.Client;
 using System.Text;
 
+
+/***********************************************************/
+
 /************************************************************
  * Script to connect the movement in the Unity project to   *
  * the raspberry Pi using the AMQP protocol, the            *
@@ -90,6 +93,7 @@ public class Movement : MonoBehaviour
         }
         else
         {
+            //If it was previously moving forward, and now is stopped, we mark the forward flag as false, to know that it is not moving forward
             if (fFlag) { fFlag = false; }
         }
 
@@ -100,7 +104,7 @@ public class Movement : MonoBehaviour
             if (!bFlag)
             {
                 bFlag = true;
-                ch.BasicPublish("", "movement", properties, messageBwrd);
+                ch.BasicPublish("", "movement", null, messageBwrd);
 
                 if (!stopFlag)
                 {
@@ -120,7 +124,7 @@ public class Movement : MonoBehaviour
             if (!lFlag)
             {
                 lFlag = true;
-                ch.BasicPublish("", "movement", properties, messageLeft);
+                ch.BasicPublish("", "movement", null, messageLeft);
 
                 if (!stopFlag)
                 {
@@ -140,7 +144,7 @@ public class Movement : MonoBehaviour
             if (!rFlag)
             {
                 rFlag = true;
-                ch.BasicPublish("", "movement", properties, messageRight);
+                ch.BasicPublish("", "movement", null, messageRight);
 
                 if (!stopFlag)
                 {
@@ -161,7 +165,7 @@ public class Movement : MonoBehaviour
             if (stopFlag)
             {
                 stopFlag = false;
-                ch.BasicPublish("", "movement", properties, messageStop);
+                ch.BasicPublish("", "movement", null, messageStop);
 
                 Debug.Log("S");
             }
@@ -174,6 +178,7 @@ public class Movement : MonoBehaviour
     private void OnApplicationQuit()
     {
         ch.QueuePurge("movement");
+        Debug.Log("movment Purged");
         ch.Close();
     }
 }
