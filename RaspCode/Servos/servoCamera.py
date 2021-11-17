@@ -10,8 +10,8 @@ class ServoCamera:
     hSpeed=float(1)
     
     def __init__(self):
-        sD.set_PWidth_H(float(1250))
-        sD.set_PWidth_V(float(1250))
+        sD.set_PWidth_H(float(1500))
+        sD.set_PWidth_V(float(700))
                 
     def up(self):
         self.up_con=True
@@ -63,5 +63,4 @@ class ServoCamera:
     def __str__(self):
         return " up: " + str(self.up_con) + " down: " + str(self.down_con) + " left: " + str(self.left_con) + " right: " + str(self.right_con) + "speed V: " + str(self.speedV) +"speed H: " + str(self.speedH)
     
-        
         
