@@ -4,16 +4,25 @@ using UnityEngine;
 using RabbitMQ.Client;
 using System.Text;
 
+
 /************************************************************
- * Script to connect the movement in the Unity project to   *
- * the raspberry Pi using the AMQP protocol, the            *
+ *                                                          *
+ *                      Authors:                            *
+ *   Alejandro Ortega Martinez: alejandro.ormar@gmail.com   *
+ *   Juan Luis Garcia Gonzalez: jgg1009@alu.ubu.es          *
+ *                                                          *
+ ***********************************************************/
+
+/************************************************************
+ * Script to connect the movement of the raspberry Pi to   *
+ * the Unity project using the AMQP protocol, the           *
  * RabbitMQ library, and hosting the broker in              *
  * cloudamp.com                                             *
  ************************************************************/
 
 public class Movement : MonoBehaviour
 {
-    //Declaration of flags for only sending a message per movement, not one per frame
+    //Declaration of flags for only sending a message per movement, not one per frame, for not flooding the queue
     bool fFlag;
     bool bFlag;
     bool lFlag;
@@ -65,7 +74,7 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        // Forwrd movement, pressing the "w" key
         //If the w key is pressed
         if (Input.GetKey("w"))
         {
@@ -83,31 +92,29 @@ public class Movement : MonoBehaviour
                 {
                     stopFlag = true;
                 }
-
-                Debug.Log("F");
             }
-
         }
         else
         {
+            //If it was previously moving forward, and now is stopped, we mark the forward flag as false, to know that it is not moving forward
             if (fFlag) { fFlag = false; }
         }
 
 
 
+
+        // Backward movement, pressing the "s" key
         if (Input.GetKey("s"))
         {
             if (!bFlag)
             {
                 bFlag = true;
-                ch.BasicPublish("", "movement", properties, messageBwrd);
+                ch.BasicPublish("", "movement", null, messageBwrd);
 
                 if (!stopFlag)
                 {
                     stopFlag = true;
                 }
-
-                Debug.Log("B");
             }
         }
         else
@@ -115,19 +122,21 @@ public class Movement : MonoBehaviour
             if (bFlag) { bFlag = false; }
         }
 
+
+
+
+        // Left movement, pressing the "a" key
         if (Input.GetKey("a"))
         {
             if (!lFlag)
             {
                 lFlag = true;
-                ch.BasicPublish("", "movement", properties, messageLeft);
+                ch.BasicPublish("", "movement", null, messageLeft);
 
                 if (!stopFlag)
                 {
                     stopFlag = true;
                 }
-
-                Debug.Log("L");
             }
         }
         else
@@ -135,19 +144,21 @@ public class Movement : MonoBehaviour
             if (lFlag) { lFlag = false; }
         }
 
+
+
+
+        // Right movement, pressing thee "d" key
         if (Input.GetKey("d"))
         {
             if (!rFlag)
             {
                 rFlag = true;
-                ch.BasicPublish("", "movement", properties, messageRight);
+                ch.BasicPublish("", "movement", null, messageRight);
 
                 if (!stopFlag)
                 {
                     stopFlag = true;
                 }
-
-                Debug.Log("R");
             }
         }
         else
@@ -155,17 +166,17 @@ public class Movement : MonoBehaviour
             if (rFlag) { rFlag = false; }
         }
 
+
+
         //If no movement key is pressed, the stop flag is checked to know if the robot was moving and it need to stop
         if (!fFlag && !bFlag && !lFlag && !rFlag)
             {
             if (stopFlag)
             {
                 stopFlag = false;
-                ch.BasicPublish("", "movement", properties, messageStop);
-
-                Debug.Log("S");
+                ch.BasicPublish("", "movement", null, messageStop);
             }
-            }
+         }
 
         
     }
@@ -173,6 +184,9 @@ public class Movement : MonoBehaviour
 
     private void OnApplicationQuit()
     {
+        //When exiting the app, all movements are stopped
+        ch.BasicPublish("", "movement", null, messageStop);
+        //The queue is purged, in order to not let any unaknowledge message waiting for the next time the robot connects to it.
         ch.QueuePurge("movement");
         ch.Close();
     }
