@@ -1,6 +1,25 @@
 import pika, os, logging, re
-from servoArmMov import *
+from servoArm import *
 import threading
+
+
+'''
+        Authors:
+        Alejandro Ortega Martinez: alejandro.ormar@gmail.com
+        Juan Luis Garcia Gonzalez: jgg1009@alu.ubu.es
+'''
+
+
+'''
+Script that creates the connection with the AMQP server
+and listen for messages about how the arm servos have to move.
+Then, implementing the movement library, performs the
+arm servos movement.
+
+This is all done withh mutithreading, to perform each movent independently,
+and allow for the arm to move more than one servo at a time.
+'''
+
 
 #Connects to the AMQP broker
 url = os.environ.get('CLOUDAMQP_URL', 'amqps://zvaqximc:I2_yD3JdVLcdqBIdH__EUToUUdEVSsWf@fish.rmq.cloudamqp.com/zvaqximc')
@@ -16,13 +35,18 @@ sa = ServoArmMovement()
 while True:
     
     for method_frame, properties, body in channel.consume("ClawServos"):
-        #Four different body mesagges possible (controlled by code on the unity project):
-        # b'up'
-        # b'down'
-        # b'left'
-        # b'right'
-        # b'sup'
-        #We get the string between '' to call the function with the same name
+        #The message is any combination of the following letters, indicating the movvement:
+        # u -> for moving up
+        # d -> for moving down
+        # s -> for stopping
+        # An the following, indicating the servos:
+        # S1 -> The first servo, the one closer to the robot chasis
+        # S2 -> The second servo
+        # SR -> The robot servo
+        # SP -> The claw servo
+        
+        #For example: b'uS1'
+        #The string is parsed to know which function and which parameters are needed
         body=str(body)
         #print(body)
         if body[2]=="s":

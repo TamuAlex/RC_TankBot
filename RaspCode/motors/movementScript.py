@@ -1,6 +1,18 @@
 import pika, os, logging, re
 from movement import *
+'''
+        Authors:
+        Alejandro Ortega Martinez: alejandro.ormar@gmail.com
+        Juan Luis Garcia Gonzalez: jgg1009@alu.ubu.es
+'''
 
+
+'''
+Script that creates the connection with the AMQP server
+and listen for messages about how the robot has to move.
+Then, implementing the movement library, performs the
+robot movement.
+'''
 #Connects to the AMQP broker
 url = os.environ.get('CLOUDAMQP_URL', 'amqps://zvaqximc:I2_yD3JdVLcdqBIdH__EUToUUdEVSsWf@fish.rmq.cloudamqp.com/zvaqximc')
 params = pika.URLParameters(url)
@@ -14,6 +26,7 @@ mv = Movement()
 
 while True:
     
+    #Checks for new messages in the queue
     for method_frame, properties, body in channel.consume("movement"):
         #Four different body mesagges possible (controlled by code on the unity project):
         # b'forward'
