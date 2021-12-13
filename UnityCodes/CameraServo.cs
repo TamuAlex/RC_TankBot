@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using RabbitMQ.Client;
 using System.Text;
+using Valve.VR;
 /***********************************************************
  *                                                         *
  *                         Authors:                        *
@@ -22,6 +23,12 @@ using System.Text;
 
 public class CameraServo : MonoBehaviour
 {
+    //Declaration for VR inputs
+
+    public SteamVR_Action_Vector2 LeftJoystickAction;
+
+    public SteamVR_Action_Vector2 RightJoystickAction;
+
     //Declaration of flags for only sending a message per movement, not one per frame, for not flooding the queue
     bool upFlag;
     bool downFlag;
@@ -73,17 +80,22 @@ public class CameraServo : MonoBehaviour
         cf.Uri = serverAddress;
         IConnection conn = cf.CreateConnection();
         ch = conn.CreateModel();
-        
+
     }
 
     // Update is called once per frame
 
     void Update()
     {
+        //VR inputs
+
+        Vector2 LeftJoystickValue = LeftJoystickAction.GetAxis(SteamVR_Input_Sources.Any);
+
+        Vector2 RightJoyStickValue = RightJoystickAction.GetAxis(SteamVR_Input_Sources.Any);
 
         //Up movement, pressing the up arrow key
         //When the up arrow key is pressed
-        if (Input.GetKey(KeyCode.UpArrow))
+        if (RightJoyStickValue.y > 0.75)
         {
             //It cheks if it was not already pressed (this is used for not sending a message every frame, and flood the queue)
             if (!upFlag)
@@ -94,12 +106,13 @@ public class CameraServo : MonoBehaviour
                 upFlag = true;
             }
             //If the up arrow key is not pressed, we chek if the previous frame it was pressed
-        } else if (upFlag) 
-        {   
+        }
+        else if (upFlag)
+        {
             //If so, a message telling the servo to stop is sended
             Debug.Log("Paramos arriba");
             ch.BasicPublish("", "CameraServos", null, msgUpOff);
-            upFlag = false; 
+            upFlag = false;
 
         }
 
@@ -107,7 +120,7 @@ public class CameraServo : MonoBehaviour
 
 
         //Down movement, pressing the down key arrow
-        if (Input.GetKey(KeyCode.DownArrow))
+        if (RightJoyStickValue.y < -0.75)
         {
             if (!downFlag)
             {
@@ -115,18 +128,19 @@ public class CameraServo : MonoBehaviour
                 ch.BasicPublish("", "CameraServos", null, msgDwnOn);
                 downFlag = true;
             }
-        } else if (downFlag) 
-        { 
+        }
+        else if (downFlag)
+        {
             Debug.Log("Paramos abajo");
             ch.BasicPublish("", "CameraServos", null, msgDwnOff);
-            downFlag = false; 
+            downFlag = false;
         }
 
 
 
 
         //Left movement, pressing the left key arrow
-        if (Input.GetKey(KeyCode.LeftArrow))
+        if (RightJoyStickValue.x < -0.75)
         {
             if (!leftFlag)
             {
@@ -134,17 +148,19 @@ public class CameraServo : MonoBehaviour
                 ch.BasicPublish("", "CameraServos", null, msgLftOn);
                 leftFlag = true;
             }
-        } else if (leftFlag) { 
+        }
+        else if (leftFlag)
+        {
             Debug.Log("Paramos izq");
             ch.BasicPublish("", "CameraServos", null, msgLftOff);
-            leftFlag = false; 
+            leftFlag = false;
         }
 
 
 
 
         //Right movement, pressing the right key arrow
-        if (Input.GetKey(KeyCode.RightArrow))
+        if (RightJoyStickValue.x > 0.75)
         {
             if (!rightFlag)
             {
@@ -152,10 +168,12 @@ public class CameraServo : MonoBehaviour
                 ch.BasicPublish("", "CameraServos", null, msgRgthOn);
                 rightFlag = true;
             }
-        } else if (rightFlag) { 
+        }
+        else if (rightFlag)
+        {
             Debug.Log("Paramos dcha");
             ch.BasicPublish("", "CameraServos", null, msgRghtOff);
-            rightFlag = false; 
+            rightFlag = false;
         }
     }
 
@@ -170,6 +188,6 @@ public class CameraServo : MonoBehaviour
         //The queue is purged, in order to not let any unaknowledge message waiting for the next time the robot connects to it.
         ch.QueuePurge("CameraServos");
         ch.Close();
-        
+
     }
 }

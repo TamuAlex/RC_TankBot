@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using RabbitMQ.Client;
 using System.Text;
+using Valve.VR;
 
 
 /************************************************************
@@ -22,6 +23,13 @@ using System.Text;
 
 public class Movement : MonoBehaviour
 {
+    //Declaration for VR inputs
+
+    public SteamVR_Action_Vector2 LeftJoystickAction;
+
+    public SteamVR_Action_Vector2 RightJoystickAction;
+
+
     //Declaration of flags for only sending a message per movement, not one per frame, for not flooding the queue
     bool fFlag;
     bool bFlag;
@@ -44,7 +52,7 @@ public class Movement : MonoBehaviour
     void Start()
     {
         //Declaring the amqp server Address
-        string serverAddress = "amqps://zvaqximc:I2_yD3JdVLcdqBIdH__EUToUUdEVSsWf@fish.rmq.cloudamqp.com/zvaqximc"; 
+        string serverAddress = "amqps://zvaqximc:I2_yD3JdVLcdqBIdH__EUToUUdEVSsWf@fish.rmq.cloudamqp.com/zvaqximc";
 
         //The different messages that can be sent, encoded in a byte stream
         messageFwrd = Encoding.UTF8.GetBytes("forward");
@@ -63,9 +71,9 @@ public class Movement : MonoBehaviour
         properties.Expiration = "100";
 
         //Initialize the flags according to the movement of the robot at the start of the script (stopped)
-        fFlag = false; 
-        bFlag = false; 
-        lFlag = false; 
+        fFlag = false;
+        bFlag = false;
+        lFlag = false;
         rFlag = false;
         stopFlag = true;
 
@@ -74,9 +82,20 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //VR inputs
+
+        Vector2 LeftJoystickValue = LeftJoystickAction.GetAxis(SteamVR_Input_Sources.Any);
+
+        Vector2 RightJoyStickValue = RightJoystickAction.GetAxis(SteamVR_Input_Sources.Any);
+
+       // Debug.Log("Left joystick values: " + LeftJoystickValue);
+
+        //Debug.Log("Right joystick values: " + RightJoyStickValue);
+
+
         // Forwrd movement, pressing the "w" key
         //If the w key is pressed
-        if (Input.GetKey("w"))
+        if (LeftJoystickValue.y > 0.75)
         {
             //check that we were not already moving forward
             if (!fFlag)
@@ -104,7 +123,7 @@ public class Movement : MonoBehaviour
 
 
         // Backward movement, pressing the "s" key
-        if (Input.GetKey("s"))
+        if (LeftJoystickValue.y < -0.75)
         {
             if (!bFlag)
             {
@@ -126,7 +145,7 @@ public class Movement : MonoBehaviour
 
 
         // Left movement, pressing the "a" key
-        if (Input.GetKey("a"))
+        if (LeftJoystickValue.x < -0.75)
         {
             if (!lFlag)
             {
@@ -148,7 +167,7 @@ public class Movement : MonoBehaviour
 
 
         // Right movement, pressing thee "d" key
-        if (Input.GetKey("d"))
+        if (LeftJoystickValue.x > 0.75)
         {
             if (!rFlag)
             {
@@ -170,15 +189,15 @@ public class Movement : MonoBehaviour
 
         //If no movement key is pressed, the stop flag is checked to know if the robot was moving and it need to stop
         if (!fFlag && !bFlag && !lFlag && !rFlag)
-            {
+        {
             if (stopFlag)
             {
                 stopFlag = false;
                 ch.BasicPublish("", "movement", null, messageStop);
             }
-         }
+        }
 
-        
+
     }
 
 

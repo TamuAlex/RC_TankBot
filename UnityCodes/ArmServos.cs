@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using RabbitMQ.Client;
 using System.Text;
+using Valve.VR;
 
 
 
@@ -24,6 +25,28 @@ using System.Text;
 
 public class ArmServos : MonoBehaviour
 {
+    //Declaration for VR inputs
+
+    public SteamVR_Action_Vector2 LeftJoystickAction;
+
+    public SteamVR_Action_Vector2 RightJoystickAction;
+
+    public SteamVR_Action_Boolean grip1Left;
+
+    public SteamVR_Action_Boolean grip1Right;
+
+    public SteamVR_Action_Boolean grip2Left;
+
+    public SteamVR_Action_Boolean grip2Right;
+
+    public SteamVR_Action_Boolean yButton;
+    public SteamVR_Action_Boolean bButton;
+
+    public SteamVR_Action_Boolean xButton;
+    public SteamVR_Action_Boolean aButton;
+
+
+
 
     //Declaration of flags for only sending a message per movement, not one per frame, for not flooding the queue
     bool elbowUpFlag;
@@ -46,7 +69,7 @@ public class ArmServos : MonoBehaviour
     byte[] msgWristStop;
 
     byte[] msgTurnRight;
-    byte[] msgTurnLeft; 
+    byte[] msgTurnLeft;
     byte[] msgTurnStop;
 
     byte[] msgOpenClaw;
@@ -66,12 +89,12 @@ public class ArmServos : MonoBehaviour
 
         //Initialize the flags according to the servos state at the start of the script (stopped)
         elbowUpFlag = false;
-         elbowDownFlag = false;
-         wristUpFlag = false;
-         wristDownFlag = false;
-         turnLeftFlag = false;
-         turnRightFlag = false;
-         openClawFlag = false;
+        elbowDownFlag = false;
+        wristUpFlag = false;
+        wristDownFlag = false;
+        turnLeftFlag = false;
+        turnRightFlag = false;
+        openClawFlag = false;
         closeClawFlag = false;
 
 
@@ -85,7 +108,7 @@ public class ArmServos : MonoBehaviour
         msgWristStop = Encoding.UTF8.GetBytes("sS2");
 
         msgTurnRight = Encoding.UTF8.GetBytes("uSR");
-        msgTurnLeft = Encoding.UTF8.GetBytes("dSR");       
+        msgTurnLeft = Encoding.UTF8.GetBytes("dSR");
         msgTurnStop = Encoding.UTF8.GetBytes("sSR");
 
         msgOpenClaw = Encoding.UTF8.GetBytes("uSP");
@@ -102,24 +125,36 @@ public class ArmServos : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Movement for the first servo, called the "elbow" servo, using the keys 7(for moving up) and 4(for moving down) from the keypad
-        //When the 7 key is pressed
-        if (Input.GetKey(KeyCode.Keypad7))
+        //VR inputs
+
+        Vector2 LeftJoystickValue = LeftJoystickAction.GetAxis(SteamVR_Input_Sources.Any);
+
+        Vector2 RightJoyStickValue = RightJoystickAction.GetAxis(SteamVR_Input_Sources.Any);
+
+        Debug.Log("Left joystick values: " + LeftJoystickValue);
+
+        Debug.Log("Right joystick values: " + RightJoyStickValue);
+
+        //Movement for the first servo, called the "elbow" servo, using the two grips at the front of the controllers (left->up; right->down)
+        //When the up grip is pressed
+        if (grip1Left.state)
         {
+            
             //It is cheked if the servo was not already moving up
             if (!elbowUpFlag)
             {
                 //It start moving up
+                Debug.Log("moving up");
                 ch.BasicPublish("", "ClawServos", null, msgElbowUp);
                 elbowUpFlag = true;
             }
         }
-        //If the 7 key is not pressed
+        //If the up grip is not pressed
         else if (elbowUpFlag)
         {
             elbowUpFlag = false;
 
-            //It is checked if the 4 key is not pressed neither
+            //It is checked if the down grip is not pressed neither
             if (!elbowDownFlag)
             {
                 //If so, the servo is stopped
@@ -128,11 +163,12 @@ public class ArmServos : MonoBehaviour
 
         }
 
-        // The same occurs when the 4 key for moving the servo downn
-        if (Input.GetKey(KeyCode.Keypad4))
+        // The same occurs when the down grip for moving the servo down
+        if (grip1Right.state)
         {
             if (!elbowDownFlag)
             {
+                Debug.Log("Going down");
                 ch.BasicPublish("", "ClawServos", null, msgElbowDown);
                 elbowDownFlag = true;
             }
@@ -151,8 +187,8 @@ public class ArmServos : MonoBehaviour
 
 
 
-        //Movement for the second servo, called the "wrist" servo, using the keys 8(for moving up) and 5(for moving down) from the keypad
-        if (Input.GetKey(KeyCode.Keypad8))
+        //Movement for the second servo, called the "wrist" servo, using the two grips at the side of the controllers (left->up; right->down)
+        if (grip2Left.state)
         {
             if (!wristUpFlag)
             {
@@ -167,7 +203,7 @@ public class ArmServos : MonoBehaviour
             if (!wristDownFlag) { ch.BasicPublish("", "ClawServos", null, msgWristStop); }
         }
 
-        if (Input.GetKey(KeyCode.Keypad5))
+        if (grip2Right.state)
         {
             if (!wristDownFlag)
             {
@@ -185,8 +221,8 @@ public class ArmServos : MonoBehaviour
 
 
 
-        //Movement for the spinning servo, using the keys 1(for moving left) and 2(for moving right) from the keypad
-        if (Input.GetKey(KeyCode.Keypad1))
+        //Movement for the spinning servo, using the y and b buttons from the controller
+        if (yButton.state)
         {
             if (!turnLeftFlag)
             {
@@ -202,7 +238,7 @@ public class ArmServos : MonoBehaviour
         }
 
 
-        if (Input.GetKey(KeyCode.Keypad2))
+        if (bButton.state)
         {
             if (!turnRightFlag)
             {
@@ -213,14 +249,14 @@ public class ArmServos : MonoBehaviour
         else if (turnRightFlag)
         {
             turnRightFlag = false;
-            if (!turnLeftFlag){ ch.BasicPublish("", "ClawServos", null, msgTurnStop); }
+            if (!turnLeftFlag) { ch.BasicPublish("", "ClawServos", null, msgTurnStop); }
         }
 
 
 
 
-        //Movement for the claw servo, using the keys 0(for opening) and enter(for closing) from the keypad
-        if (Input.GetKey(KeyCode.Keypad0))
+        //Movement for the claw servo, using the x and a buttons from the controllers
+        if (xButton.state)
         {
             if (!openClawFlag)
             {
@@ -235,7 +271,7 @@ public class ArmServos : MonoBehaviour
         }
 
 
-        if (Input.GetKey(KeyCode.KeypadEnter))
+        if (aButton.state)
         {
             if (!closeClawFlag)
             {
