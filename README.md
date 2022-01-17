@@ -9,7 +9,8 @@ Controlled by a Unity app and VR set
 
 
 ## *Unity project*
-https://tuas365-my.sharepoint.com/:u:/g/personal/alejandro_ortegamartinez_edu_turkuamk_fi/EXqSEJtLn8RFpZF99uLOa0sB0oFB9EL232pDX5cLqEma3g?e=ic8EfB
+https://tuas365-my.sharepoint.com/:u:/g/personal/alejandro_ortegamartinez_edu_turkuamk_fi/EV5GIJV7zztJlzsSsNKfIsEBEG40_-QvP37fTVBgqF3KPA?e=YVPkDS
+(If there is any kind of problem with the link please contact alejandro.ormar@gmail.com)
 
 ## *How it works?*
 See the [Project Wiki](../../wiki) to see how the scripts and the connections work
