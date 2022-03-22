@@ -1,5 +1,7 @@
 #! /bin/sh
+
 #Connection try
+#Waits until a Internet connection is stablished before continuing with the set-up
 status=1
 echo "Waiting for a connection"
 while [ $status -ne 0 ];do
@@ -13,6 +15,7 @@ echo "Done"
 	 
 #Check packages
 
+#Checks if the pigpio package is installed (for controlling the pins) and launchs it
 if dpkg -l | grep -q -w pigpio; then
 	echo "Pigpio installed"
 	sudo pigpiod  > /dev/null 2>&1 
@@ -23,14 +26,10 @@ else
 fi
 
 
-if dpkg -l | grep -q -w motion; then
-	echo "motion installed"
+#Launches the rtsp-simple-server application to strat emiting the video stream
 	sudo  /home/pi/RaspCode/rtsp-simple-server 2> /home/pi/server.log & 
-	echo "motion launched"
-else
-	echo "No Motion version founded" 
-	exit 1
-fi
+	echo "rtsp-simple-server launched"
 
 
+#Starts the python code where all the motos and servos will start up
 python3 /home/pi/RaspCode/tankrobot.py

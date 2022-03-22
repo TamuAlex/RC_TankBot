@@ -37,6 +37,8 @@ pwm.set_PWM_frequency(pinSP, 50)
 #Creates a dictionary with the servos names, and their pines
 pines={"S1":7,"S2":8,"SR":11,"SP":25}
 
+
+
 '''
 Function that set a given servo a new pulsewidth.
 It makes the servo move to a new position, depending the
@@ -48,6 +50,8 @@ Param (newPulseW): Pulse width to move the servo
 def set_PWidth (pin,newPulseW):
     if newPulseW >= 500 and newPulseW <=2500:
         pwm.set_servo_pulsewidth( pines[pin], newPulseW )
+
+
     
 '''
 Function that gives the current pulse width of the
@@ -59,6 +63,8 @@ Return: Pulsewidth of the given Servo
 '''
 def get_PWidth (pin):
     return pwm.get_servo_pulsewidth( pines[pin])
+
+
 
 '''
 Function to get the list of pines used to move the servos
