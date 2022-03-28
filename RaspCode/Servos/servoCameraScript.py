@@ -21,7 +21,14 @@ Then, implementing the movement library, performs the
 robot movement.
 
 More information about what kind of messages does this script recieve in the github project
-
+All messages intended for moving the camera servos of robot have the following structure:
+    * These messages start with a "c"
+    * Following the "c" must appear the direction of the movement between single quotes:
+        -c'up' : To move the camera up 
+        -c'down' : To move the camera down  
+        -c'right' : To turn the camera right 
+        -c'left' : To turn the camera left
+With the message "close", the current connection asks to be closed.
 '''
 async def receive():
 

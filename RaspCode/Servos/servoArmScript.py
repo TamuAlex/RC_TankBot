@@ -23,6 +23,16 @@ arm servos' movement.
 
 More information about what kind of messages does this script recieve in the github project
 
+All messages intended for moving the arm of the robot have the following structure:
+    * These messages start with a "a"
+    * Following the "a" must appear the direction of the movement (u(up), d(down)) the acronym of the servo to be moved  between single quotes. 
+    * If the intention is to stop the servo pre-movement, must appear an "s" instead of the direction.
+        -a'[u,d,s]S1' : To move up, down or to stop the first servo (servo arm closest to the robot).
+        -a'[u,d,s]S2' : To move up, down or to stop the second servo (second servo arm closest to the robot) .
+        -a'[u,d,s]SR' : To turn right (up) , left(down) or to stop the rotatory servo.  
+        -a'[u,d,s]SP' : To move open(up), close(down) or to stop the craw.
+With the message "close", the current connection asks to be closed.
+
 '''
 async def receive():
     # It connects to the WebSocket server url

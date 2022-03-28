@@ -19,6 +19,15 @@ Then, implementing the movement library, performs the
 robot movement.
 
 More information about what kind of messages does this script recieve in the github project
+
+All messages intended for moving the physical robot have the following structure:
+    * These messages start with a "m"
+    * Following the "m" must appear the direction of the movement between single quotes:
+        -m'forward' : To go forward 
+        -m'back' : To go back 
+        -m'right' : To turn right 
+        -m'left' : To turn left
+With the message "close", the current connection asks to be closed.
 '''
 async def receive():
 
