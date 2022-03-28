@@ -13,16 +13,12 @@ from CustomizedExceptions import *
 
 
 '''
-Script that creates the connection with the WebSocket server
+Script that creates the connection with the AMQP server
 and listen for messages about how the robot has to move.
 Then, implementing the movement library, performs the
 robot movement.
-
-(See Github for how the messages format should be)
 '''
 async def receive():
-
-    #First of all, the IP of the WebSocket server to which the script connects is declared
     uri = "ws://172.24.50.15:8765"
     
     async for websocket in websockets.connect(uri):
