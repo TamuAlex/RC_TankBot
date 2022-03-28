@@ -1,6 +1,10 @@
 from movement import *
 import websockets, asyncio
+import unittest
+import sys 
+sys.path.append("/home/pi/RaspCode/utils") 
 
+from CustomizedExceptions import * 
 '''
         Authors:
         Alejandro Ortega Martinez: alejandro.ormar@gmail.com
@@ -21,18 +25,21 @@ async def receive():
     #First of all, the IP of the WebSocket server to which the script connects is declared
     uri = "ws://172.24.50.15:8765"
     
-    async with websockets.connect(uri) as websocket:
-        while True:
-            #First of all, it waits until a message is recieved
-            message = (await websocket.recv())
-
-            #Checks if the message is meant for the robot movement (It starts with an "m")
-            if message[0]=="m":
-
-                #If is a moving option, a thread is created and started, calling the proper moving 
-                func = getattr(mv, str(message)[2:-1])
-                func()
-            
+    async for websocket in websockets.connect(uri):
+        try:
+            while True:
+                message = (await websocket.recv())
+                print(message)
+                if message[0]=="m":
+                    func = getattr(mv, str(message)[2:-1])
+                    func()
+                if message == "close":
+                        raise CustomizedExceptions.ClosingNoticeError()  
+        except websockets.ConnectionClosed:
+            continue
+        
+        except CustomizedExceptions.ClosingNoticeError:
+            break                 
 if __name__ == "__main__":
     mv = Movement()
     asyncio.run(receive())

@@ -1,0 +1,2 @@
+class ClosingNoticeError (Exception):
+    pass
