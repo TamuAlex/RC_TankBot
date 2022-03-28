@@ -1,5 +1,7 @@
 #! /bin/sh
 #Connection try
+
+#Waits until a connection to internet is stablished
 status=1
 echo "Waiting for a connection"
 while [ $status -ne 0 ];do
