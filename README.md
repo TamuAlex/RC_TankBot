@@ -179,6 +179,7 @@ If you see that the camera does not start, try coping the rtsp-simple-server.yml
 The connection to the robot is made via WebSockets, which receive the messages from a server. 
 <p>There is a list of messages the robot recognizes and then it acts according to them.</p>
 <p>you can check the messages the robot recognices here:</p>
+
 * [Movement messages](https://github.com/TamuAlex/RC_TankBot/wiki/Movement-Script#types-of-messages-accepted)
 * [Arm Servos](https://github.com/TamuAlex/RC_TankBot/wiki/Claw-Servos-Script#types-of-messages-accepted)
 * [Camera Servos](https://github.com/TamuAlex/RC_TankBot/wiki/Claw-Servos-Script#types-of-messages-accepted)
