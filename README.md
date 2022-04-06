@@ -18,7 +18,11 @@ Code to make the tank robot at Turku GameLab work
   + [launcher.sh](#launchersh)
   + [tankrobot.py](#tankrobotpy)
   + [Editing the cron file](#editing-the-cron-file)
+  + [WebSocket server IP](https://github.com/TamuAlex/RC_TankBot/edit/main/README.md#websocket-server-ip)
   + [Camera troubleshooting](#camera-troubleshooting)
+
+* [Connecting to the Robot](#connecting-to-the-robot)
+  + [WebSocket server example](#websocket-server-example)
 
 <br>
 <br>
@@ -124,8 +128,8 @@ Now, we want the cron daemos to execute the launcher.sh script everytime the ras
 * https://github.com/TamuAlex/RC_TankBot/blob/e393ab762e3f220136e3b69a507c60686870d252/RaspCode/Servos/servoArmScript.py#L39
 * https://github.com/TamuAlex/RC_TankBot/blob/e393ab762e3f220136e3b69a507c60686870d252/RaspCode/Servos/servoCameraScript.py#L36
 * https://github.com/TamuAlex/RC_TankBot/blob/e393ab762e3f220136e3b69a507c60686870d252/RaspCode/CameraStream/streaming.py#L25
-
 <br>
+
 ### Camera Troubleshooting
 If you see that the camera does not start, try coping the rtsp-simple-server.yml archive to the user folder (/home/pi)
 
