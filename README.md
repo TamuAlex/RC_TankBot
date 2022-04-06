@@ -1,7 +1,13 @@
 # RC_TankRobot
-Code to make the tank robot at Turku GameLab work 
+Code to make the tank robot at Turku GameLab work
+<br>
+
+![Robot](https://github.com/TamuAlex/RC_TankBot/blob/main/images/Robot.png?raw=true "Robot")
 <br>
 <br>
+<br>
+<br>
+
 ## Table Of Contents
 * [General info](#general-info)
   + [Anatomy of the robot](#anatomy-of-the-robot)
@@ -26,6 +32,8 @@ Code to make the tank robot at Turku GameLab work
 
 <br>
 <br>
+<br>
+<br>
 
 ## General info
 This project consists on all the code neccessary to get a tank robot working, up and going headless from start, as well as some examples on how to implement the communications from a server to send the movement instructions.
@@ -39,6 +47,7 @@ The main controller of this tank robot is a [Raspberry pi 3b](https://www.raspbe
 ![PWR.A53 A board](https://github.com/TamuAlex/RC_TankBot/blob/main/images/Screenshot%202022-04-06%20112405.png?raw=true "PWR a.53 A")
 <br>
 <br>
+
 #### The muscles (The actuators)
 We can divide them into two categories, motors and servos.
 ##### Motors
@@ -46,10 +55,17 @@ The actuators that perrform the robot movement are two simple motors.
 ##### Servos
 They permit the movement of the arm and the camera
 * The camera has two servos, one for moving up and down, and another one for looking sideways. They have 180 degrees of freedom
+  ![Camera Servos](https://github.com/TamuAlex/RC_TankBot/blob/main/images/Servo1.png?raw=true "Camera Servos")
 * The arm has four servos:
   + Two servos for moving the arm up and down, with 180 degrees of freedom
   + One servo that lets the claw turn left and right, with 180 degrees of freedom
   + One servo that performs the opening-closing of the claw
+<br>
+
+![Arm Servos](https://github.com/TamuAlex/RC_TankBot/blob/main/images/Arm.png?raw=true "Arm Servos")
+
+<br>
+<br>
 
 #### The eyes (A camera)
 The robot also has a simple USB camera attached to the raspberry Pi to receive the video feed for it to be streamed.  
@@ -58,7 +74,12 @@ The robot also has a simple USB camera attached to the raspberry Pi to receive t
 
 #### The energy
 This tank robot is powered with an 11.1V 2200mAh 8A protection board lithium battery pack
+<br>
 
+![Battery](https://github.com/TamuAlex/RC_TankBot/blob/main/images/Battery.png?raw=true "Camera Servos")
+
+<br>
+<br>
 
 ### *The Scripts*
 See the [Project Wiki](../../wiki) to see how the scripts works
@@ -76,10 +97,13 @@ Before having the robot up and running (and more important, having it working he
 ### First steps
 <p>First of all, install an ubuntu distro in the raspberry (This tutorial is made for the raspbian distro, if you are not using this, you may need to change some lines in a couple of scripts), and then *copy the [RaspCode](https://github.com/TamuAlex/RC_TankBot/tree/main/RaspCode) folder in the home directory of the pi user (/home/pi)*</p>
 <br>
+<br>
 
 ### WiFi Connection
 FThe next thing to do is to set up a WiFi connection to have the robot connected to. Remember the SSID and the password of the WiFi you connect the robot to the first time, and use allways that same SSID and password, so the robot will be able to connect automaticaly once it is working headless.
 <br>
+<br>
+
 
 ### Install pigpio package
 <p>This is the package used to control the General Pins for Input/Output (GPIO) on the raspberry, so install it by typping:</p>
@@ -88,6 +112,8 @@ FThe next thing to do is to set up a WiFi connection to have the robot connected
 $ sudo apt-get install pigpio
 ``
 <br>
+<br>
+
 ### launcher.sh
 [This script](https://github.com/TamuAlex/RC_TankBot/blob/main/RaspCode/launcher.sh) is the one that checks that everything is working fine, and then launch the rest of the scripts.
 
@@ -100,11 +126,16 @@ https://github.com/TamuAlex/RC_TankBot/blob/db08880b34885b051e20bbbc93cfe5aaeb37
 Finally, it launches the [tankrobot.py](https://github.com/TamuAlex/RC_TankBot/blob/main/RaspCode/tankrobot.py) script:
 https://github.com/TamuAlex/RC_TankBot/blob/db08880b34885b051e20bbbc93cfe5aaeb37782f/RaspCode/launcher.sh#L32
 **Note:** If your project is in other folder, you should change this line of code
+
+<br>
 <br>
 
 ### tankrobot.py
 Its mission is to launch each individual script for each functionality (movement, camera servos, arm servos, and video streaming):
 https://github.com/TamuAlex/RC_TankBot/blob/db08880b34885b051e20bbbc93cfe5aaeb37782f/RaspCode/tankrobot.py#L7-L10
+
+<br>
+<br>
 
 ### Editing the Cron file
 <p>The cron daemon's work is to automatize jobs. As we want that everithing start on startup, we need to tell the cron daemon to do so.</p>
@@ -122,18 +153,26 @@ Now, we want the cron daemos to execute the launcher.sh script everytime the ras
 
 **Note:** If your project is in other folder, you should change this line of code
 
+<br>
+<br>
+
 ### WebSocket server IP
 <p>In each script that handles WebSocket messages, we have to write down the IP adress that the WebSocket server has, in the following lines:</p>
-* https://github.com/TamuAlex/RC_TankBot/blob/e393ab762e3f220136e3b69a507c60686870d252/RaspCode/motors/movementScript.py#L35
-* https://github.com/TamuAlex/RC_TankBot/blob/e393ab762e3f220136e3b69a507c60686870d252/RaspCode/Servos/servoArmScript.py#L39
-* https://github.com/TamuAlex/RC_TankBot/blob/e393ab762e3f220136e3b69a507c60686870d252/RaspCode/Servos/servoCameraScript.py#L36
-* https://github.com/TamuAlex/RC_TankBot/blob/e393ab762e3f220136e3b69a507c60686870d252/RaspCode/CameraStream/streaming.py#L25
+https://github.com/TamuAlex/RC_TankBot/blob/e393ab762e3f220136e3b69a507c60686870d252/RaspCode/motors/movementScript.py#L35
+https://github.com/TamuAlex/RC_TankBot/blob/e393ab762e3f220136e3b69a507c60686870d252/RaspCode/Servos/servoArmScript.py#L39
+https://github.com/TamuAlex/RC_TankBot/blob/e393ab762e3f220136e3b69a507c60686870d252/RaspCode/Servos/servoCameraScript.py#L36
+https://github.com/TamuAlex/RC_TankBot/blob/e393ab762e3f220136e3b69a507c60686870d252/RaspCode/CameraStream/streaming.py#L25
+
+<br>
 <br>
 
 ### Camera Troubleshooting
 If you see that the camera does not start, try coping the rtsp-simple-server.yml archive to the user folder (/home/pi)
 
-
+<br>
+<br>
+<br>
+<br>
 
 
 ## *Connecting to the robot*
@@ -148,6 +187,9 @@ The connection to the robot is made via WebSockets, which receive the messages f
 
 **IMPORTANT:** For security reasons, before start a new movement of the same type, stop the current movement (e.g: Before making the camera look down, stop the movement that is making it look up)
 
+<br>
+<br>
+
 ### WebSocket server example
 The [serverMensaje.py](https://github.com/TamuAlex/RC_TankBot/blob/main/ServerMensaje.py) is an example of how a WebSocket server can be implemented to send a message.
 <br>
@@ -159,6 +201,8 @@ https://github.com/TamuAlex/RC_TankBot/blob/e393ab762e3f220136e3b69a507c60686870
 <br>
 <p>Finally, we have the main function, in which whe have to write our IP address, for the server to not get mistaken among all its internet interfaces (Line 36)</p>
 https://github.com/TamuAlex/RC_TankBot/blob/e393ab762e3f220136e3b69a507c60686870d252/ServerMensaje.py#L34-L37
+
+<br>
 <br>
 
 ### *Unity project*
