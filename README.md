@@ -64,7 +64,7 @@ See the [Project Wiki](../../wiki) to see how the scripts works
 <br>
 <br>
 
-## Robot Setup
+## *Robot Setup*
 Before having the robot up and running (and more important, having it working headless), a little set up is needed to be done in order to get the robot working. 
 <p>To simplify it, there are a couple of scripts that makes most of the work, but we will have to connect with a keyboard, mouse, and screen for the first time.</p>
 <br>
@@ -118,11 +118,47 @@ Now, we want the cron daemos to execute the launcher.sh script everytime the ras
 
 **Note:** If your project is in other folder, you should change this line of code
 
+### WebSocket server IP
+<p>In each script that handles WebSocket messages, we have to write down the IP adress that the WebSocket server has, in the following lines:</p>
+* https://github.com/TamuAlex/RC_TankBot/blob/e393ab762e3f220136e3b69a507c60686870d252/RaspCode/motors/movementScript.py#L35
+* https://github.com/TamuAlex/RC_TankBot/blob/e393ab762e3f220136e3b69a507c60686870d252/RaspCode/Servos/servoArmScript.py#L39
+* https://github.com/TamuAlex/RC_TankBot/blob/e393ab762e3f220136e3b69a507c60686870d252/RaspCode/Servos/servoCameraScript.py#L36
+* https://github.com/TamuAlex/RC_TankBot/blob/e393ab762e3f220136e3b69a507c60686870d252/RaspCode/CameraStream/streaming.py#L25
 
+<br>
 ### Camera Troubleshooting
 If you see that the camera does not start, try coping the rtsp-simple-server.yml archive to the user folder (/home/pi)
 
-## *Unity project*
+
+
+
+## *Connecting to the robot*
+The connection to the robot is made via WebSockets, which receive the messages from a server. 
+<p>There is a list of messages the robot recognizes and then it acts according to them.</p>
+<p>you can check the messages the robot recognices here:</p>
+* [Movement messages](https://github.com/TamuAlex/RC_TankBot/wiki/Movement-Script#types-of-messages-accepted)
+* [Arm Servos](https://github.com/TamuAlex/RC_TankBot/wiki/Claw-Servos-Script#types-of-messages-accepted)
+* [Camera Servos](https://github.com/TamuAlex/RC_TankBot/wiki/Claw-Servos-Script#types-of-messages-accepted)
+* [Video Streaming](https://github.com/TamuAlex/RC_TankBot/wiki/Camera-Script#types-of-messages-accepted)
+
+
+**IMPORTANT:** For security reasons, before start a new movement of the same type, stop the current movement (e.g: Before making the camera look down, stop the movement that is making it look up)
+
+### WebSocket server example
+The [serverMensaje.py](https://github.com/TamuAlex/RC_TankBot/blob/main/ServerMensaje.py) is an example of how a WebSocket server can be implemented to send a message.
+<br>
+<p>First of all, we have the Handler function, that registers and releases all the connections:</p>
+https://github.com/TamuAlex/RC_TankBot/blob/e393ab762e3f220136e3b69a507c60686870d252/ServerMensaje.py#L27-L31
+<br>
+<p>After that, whe have the "send" function, that sends a message to every webSocket connected to the server (as a broadcast):</p>
+https://github.com/TamuAlex/RC_TankBot/blob/e393ab762e3f220136e3b69a507c60686870d252/ServerMensaje.py#L10-L24
+<br>
+<p>Finally, we have the main function, in which whe have to write our IP address, for the server to not get mistaken among all its internet interfaces (Line 36)</p>
+https://github.com/TamuAlex/RC_TankBot/blob/e393ab762e3f220136e3b69a507c60686870d252/ServerMensaje.py#L34-L37
+<br>
+
+### *Unity project*
+Here we have an example of the logic of an app that controls the robot. Altough it is deprecated, because it uses AMQP instead of websockets, we can use it as a template.
 https://tuas365-my.sharepoint.com/:u:/g/personal/alejandro_ortegamartinez_edu_turkuamk_fi/EV5GIJV7zztJlzsSsNKfIsEBEG40_-QvP37fTVBgqF3KPA?e=YVPkDS
 
 (If there is any kind of problem with the link please contact alejandro.ormar@gmail.com)
