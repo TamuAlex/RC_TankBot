@@ -1,5 +1,4 @@
 Folder that contains the images used in the main readme file
 
-<br>
 
-Images source: [link](https://www.xiaorgeek.com/Study/Study/catalog/cid/15)
+Images source: https://www.xiaorgeek.com/Study/Study/catalog/cid/15
