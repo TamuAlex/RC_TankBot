@@ -43,7 +43,7 @@ This project consists on all the code neccessary to get a tank robot working, up
 ### *Anatomy of the robot*
 
 #### The brain (The controller)
-The main controller of this tank robot is a [Raspberry pi 3b](https://www.raspberrypi.com/products/raspberry-pi-3-model-b-plus/), attacheed  to a PWR.A53 A Power and motor driver board:
+The main controller of this tank robot is a [Raspberry pi 4b](https://www.raspberrypi.com/products/raspberry-pi-3-model-b-plus/), attacheed  to a PWR.A53 A Power and motor driver board:
 ![PWR.A53 A board](https://github.com/TamuAlex/RC_TankBot/blob/main/images/Screenshot%202022-04-06%20112405.png?raw=true "PWR a.53 A")
 <br>
 <br>
